@@ -1,4 +1,4 @@
-import express, {NextFunction} from "express";
+import express from "express";
 import * as http from "node:http";
 import chalk from 'chalk';
 import configuration from "./utils/configuration";

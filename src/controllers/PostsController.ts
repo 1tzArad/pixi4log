@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { PostsManager } from "../managers/postsManager";
 import { CategoriesManager } from "../managers/categoriesManager";
 import Logger from "../utils/Logger";
-import { Categories } from "../database/entity/Categories";
 
 const logger = new Logger("Posts-Controller");
 

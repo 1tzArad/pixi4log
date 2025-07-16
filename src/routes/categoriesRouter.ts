@@ -2,7 +2,6 @@ import { Router } from "express";
 import { CategoriesController } from "../controllers/CategoriesController";
 import Logger from "../utils/Logger";
 
-const logger = new Logger("Categories-Router");
 const router = Router();
 
 router.get("/", CategoriesController.getCategories);
