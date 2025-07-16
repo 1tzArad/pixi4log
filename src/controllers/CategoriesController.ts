@@ -7,7 +7,6 @@ const logger = new Logger("Categories-Controller");
 
 export class CategoriesController {
     public static async getCategories(req: Request, res: Response) {
-        logger.debug("GET /category/ called");
         try {
             const response = await CategoriesManager.getCategories();
             res.status(response.status === "success" ? 200 : 400).json(response);
@@ -17,7 +16,6 @@ export class CategoriesController {
     }
 
     public static async createCategory(req: Request, res: Response) {
-        logger.debug("POST /category/new called");
         const { name, fancyName, icon } = req.body;
         if (!name || !fancyName || !icon) {
             return res.status(400).json({ status: "error", error: { message: "name, fancyName and icon are required" } });
@@ -27,9 +25,7 @@ export class CategoriesController {
     }
 
     public static async editCategory(req: Request, res: Response) {
-        logger.debug("POST /category/edit called");
-        const identifier = req.body.identifier;
-        const newData = req.body.newData;
+        const { identifier, newData } = req.body
 
         if (!identifier || typeof newData !== "object") {
             return res.status(400).json({ status: "error", error: { message: "identifier and newData are required" } });
@@ -57,7 +53,6 @@ export class CategoriesController {
     }
 
     public static async deleteCategory(req: Request, res: Response) {
-        logger.debug("POST /category/delete called");
         const identifier = req.body.identifier;
 
         if (!identifier) {
@@ -88,8 +83,6 @@ export class CategoriesController {
     public static async getCategoryByIdentifier(req: Request, res: Response) {
         try {
             const { identifier } = req.params;
-            logger.debug("GET /category/"+ identifier +" called")
-
             let category;
             const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
             if (uuidRegex.test(identifier)) {

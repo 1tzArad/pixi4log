@@ -1,4 +1,4 @@
-import express from "express";
+import express, {NextFunction} from "express";
 import * as http from "node:http";
 import chalk from 'chalk';
 import configuration from "./utils/configuration";
@@ -19,15 +19,16 @@ logger.debug("Starting application initialization");
 app.use(express.json());
 app.use(compression());
 app.use(helmet());
+app.use(express.urlencoded({ extended: true }))
 
-logger.debug("Middlewares applied: json, compression, helmet");
+logger.debug("Middlewares applied: json, compression, helmet, urlencoded");
 
 // handlers
-routerHandler(app);
-logger.debug("Router handler executed");
-
 middlewareHandler(app);
 logger.debug("Middleware handler executed");
+
+routerHandler(app);
+logger.debug("Router handler executed");
 
 // database
 dataSource.initialize()

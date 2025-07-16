@@ -8,7 +8,6 @@ const logger = new Logger("Posts-Controller");
 
 export class PostsController {
     public static async getPosts(req: Request, res: Response) {
-        logger.debug("GET /posts/ called");
         try {
             const fields: (keyof typeof PostsManager["PostsRepository"]["target"])[] = req.query.fields
                 ? (req.query.fields as string).split(",") as any
@@ -22,7 +21,6 @@ export class PostsController {
     }
 
     public static async getPostByIdentifier(req: Request, res: Response) {
-        logger.debug(`GET /posts/:identifier called with params: ${JSON.stringify(req.params)}`);
         try {
             const identifierRaw = req.params.identifier;
             let identifier: any = {};
@@ -44,7 +42,6 @@ export class PostsController {
     }
 
     public static async createPost(req: Request, res: Response) {
-        logger.debug("POST /posts/new called");
         const { content, categoryName } = req.body;
         if (!content || !categoryName) {
             return res.status(400).json({ status: "error", error: { message: "content and categoryName are required" } });
@@ -59,9 +56,7 @@ export class PostsController {
     }
 
     public static async editPost(req: Request, res: Response) {
-        logger.debug("POST /posts/edit called");
-        const identifier = req.body.identifier;
-        const newData = req.body.newData;
+        const { newData, identifier } = req.body
 
         if (!identifier || typeof newData !== "object") {
             return res.status(400).json({ status: "error", error: { message: "identifier and newData are required" } });
@@ -73,7 +68,6 @@ export class PostsController {
     }
 
     public static async deletePost(req: Request, res: Response) {
-        logger.debug("DELETE /posts/delete called");
         const identifier = req.body.identifier;
 
         if (!identifier) {
@@ -86,7 +80,6 @@ export class PostsController {
     }
 
     public static async changePostCategory(req: Request, res: Response) {
-        logger.debug("POST /posts/category/change called");
         const { postIdentifier, newCategoryIdentifier } = req.body;
 
         if (!postIdentifier || !newCategoryIdentifier) {
