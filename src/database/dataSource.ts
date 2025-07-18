@@ -7,7 +7,11 @@ export const dataSource = new DataSource({
     database: configuration.database.name,
     username: configuration.database.username,
     password: configuration.database.password,
-    entities: [__dirname + "/entity/*.ts"],
+    entities: [
+    process.env.NODE_ENV === "development"
+        ? __dirname + "/entity/*.ts"
+        : __dirname + "/entity/*.js"
+    ],
     synchronize: true,
     logging: false
 });
