@@ -1,0 +1,8 @@
+{
+"app":"pixi4log"
+"port":3000
+"build":{
+"location":"iran"
+}
+"disks":[]
+}
