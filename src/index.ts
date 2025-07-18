@@ -38,12 +38,10 @@ dataSource.initialize()
     })
     .catch((error) => {
         new Logger('Database').error("Error during Data Source initialization:" + error);
-        logger.error("Database initialization error: " + error);
     });
 
 server.listen(configuration.port, () => {
     logger.info("Server listening on port " + configuration.port);
-    logger.debug(`HTTP server listening on port ${configuration.port}`);
 });
 
 // Anti-Crash handlers with logs
