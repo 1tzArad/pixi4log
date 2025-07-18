@@ -177,12 +177,39 @@ export class CategoriesManager {
     }
 
     public static async findCategory(identifier: CategoriesIdentifier): Promise<Categories | null> {
-        this.logger.debug(`findCategory called with identifier=${JSON.stringify(identifier)}`);
-        try {
-            return await this.findCategoryOrFail(identifier);
-        } catch {
+    this.logger.debug(`findCategory called with identifier=${JSON.stringify(identifier)}`);
+    try {
+        const repo = dataSource.getRepository(Categories);
+
+        let where: any = {};
+        if ("uuid" in identifier) {
+            where.uuid = identifier.uuid;
+        } else if ("name" in identifier) {
+            where.name = identifier.name;
+        } else {
+            throw new Error("Invalid category identifier");
+        }
+
+        const category = await repo.findOne({
+            where,
+            relations: ["posts"],
+            order: {
+                posts: {
+                    timestamp: "DESC"
+                }
+            }
+        });
+
+        if (!category) {
             this.logger.debug("Category not found");
             return null;
         }
+
+        return category;
+    } catch (e) {
+        this.logger.debug("Category not found");
+        return null;
     }
+}
+
 }
