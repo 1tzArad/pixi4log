@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development ts-node src/index.ts",
     "dev:watch": "cross-env NODE_ENV=development ts-node-dev --respawn src/index.ts",
     "build": "npm run tsc",
-    "start": "cross-env NODE_ENV=production node --no-deprecation dist/index.js",
+    "start": "node --no-deprecation dist/index.js",
     "tsc": "tsc"
   },
   "dependencies": {
