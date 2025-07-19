@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from "express";
 import * as http from "node:http";
 import chalk from 'chalk';
