@@ -80,17 +80,18 @@ export class PostsManager {
     }
 
     public static async getPostByTimestamp(timestamp: string): Promise<Response> {
-        this.logger.debug(`getPostByTimestamp called with timestamp=${timestamp}`);
-        try {
-            const timestampInt = parseInt(timestamp)
-            const post = await this.findPostByIdentifier({ timestamp: timestampInt });
-            this.logger.debug("Post found by timestamp");
-            return { status: "success", data: post };
-        } catch (e) {
-            this.logger.error((e as Error).message);
-            return { status: "error", error: { type: Errors.NOTFOUND, message: "Post not found." } };
-        }
+    this.logger.debug(`getPostByTimestamp called with timestamp=${timestamp}`);
+    try {
+        const timestampInt = parseInt(timestamp);
+        const post = await this.findPostByIdentifier({ timestamp: timestampInt });
+        this.logger.debug("Post found by timestamp");
+        return { status: "success", data: post };
+    } catch (e) {
+        this.logger.error((e as Error).message);
+        return { status: "error", error: { type: Errors.NOTFOUND, message: "Post not found." } };
     }
+}
+
 
     public static async getPostByUUID(uuid: string): Promise<Response> {
         this.logger.debug(`getPostByUUID called with uuid=${uuid}`);
@@ -132,19 +133,23 @@ export class PostsManager {
     }
 
     public static async findPostByIdentifier(identifier: PostIdentifier): Promise<Posts> {
-        this.logger.debug(`findPostByIdentifier called with identifier=${JSON.stringify(identifier)}`);
-        if ('uuid' in identifier) {
-            return await this.PostsRepository.findOneByOrFail({ id: identifier.uuid });
-        } else if ('timestamp' in identifier) {
-            return await this.PostsRepository.findOneByOrFail({ timestamp: identifier.timestamp });
-        } else if ('category' in identifier) {
-            return await this.PostsRepository.createQueryBuilder("post")
-                .leftJoinAndSelect("post.category", "category")
-                .where("category.uuid = :uuid", { uuid: identifier.category.uuid })
-                .getOneOrFail();
-        } else {
-            this.logger.error("Invalid identifier passed to findPostByIdentifier");
-            throw new Error("Invalid identifier");
-        }
+    this.logger.debug(`findPostByIdentifier called with identifier=${JSON.stringify(identifier)}`);
+
+    const qb = this.PostsRepository.createQueryBuilder("post")
+        .leftJoinAndSelect("post.category", "category");
+
+    if ('uuid' in identifier) {
+        return await qb.where("post.id = :uuid", { uuid: identifier.uuid }).getOneOrFail();
+    } else if ('timestamp' in identifier) {
+        return await qb.where("post.timestamp = :timestamp", { timestamp: identifier.timestamp }).getOneOrFail();
+    } else if ('category' in identifier) {
+        return await qb
+            .where("category.uuid = :uuid", { uuid: identifier.category.uuid })
+            .getOneOrFail();
+    } else {
+        this.logger.error("Invalid identifier passed to findPostByIdentifier");
+        throw new Error("Invalid identifier");
     }
+}
+
 }
