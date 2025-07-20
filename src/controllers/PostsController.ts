@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PostsManager } from "../managers/postsManager";
-import { CategoriesManager } from "../managers/categoriesManager";
+import { TagsManager } from "../managers/tagsManager";
 import Logger from "../utils/Logger";
 
 const logger = new Logger("Posts-Controller");
@@ -41,18 +41,26 @@ export class PostsController {
     }
 
     public static async createPost(req: Request, res: Response) {
-        const { content, categoryName } = req.body;
-        if (!content || !categoryName) {
-            return res.status(400).json({ status: "error", error: { message: "content and categoryName are required" } });
-        }
-        try {
-            const response = await PostsManager.createPost(content, categoryName);
-            res.status(response.status === "success" ? 201 : 400).json(response);
-        } catch (e) {
-            logger.error((e as Error).message);
-            res.status(500).json({ status: "error", error: { message: "Internal server error" } });
-        }
-    }
+  const { content, tagNames } = req.body;
+
+  if (!content || !Array.isArray(tagNames) || tagNames.length === 0) {
+    return res.status(400).json({
+      status: "error",
+      error: { message: "content and at least one tagName are required" },
+    });
+  }
+
+  try {
+    const response = await PostsManager.createPost(content, tagNames);
+    res.status(response.status === "success" ? 201 : 400).json(response);
+  } catch (e) {
+    logger.error((e as Error).message);
+    res.status(500).json({
+      status: "error",
+      error: { message: "Internal server error" },
+    });
+  }
+}
 
     public static async editPost(req: Request, res: Response) {
         const { newData, identifier } = req.body
@@ -89,10 +97,10 @@ export class PostsController {
             const post = await PostsManager.findPostByIdentifier(postIdentifier);
             if (!post) return res.status(404).json({ status: "error", error: { message: "Post not found" } });
 
-            const category = await CategoriesManager.findCategory(newCategoryIdentifier);
-            if (!category) return res.status(404).json({ status: "error", error: { message: "Category not found" } });
+            const tag = await TagsManager.findTag(newCategoryIdentifier);
+            if (!tag) return res.status(404).json({ status: "error", error: { message: "Category not found" } });
 
-            const response = await PostsManager.editPost(postIdentifier, { category });
+            const response = await PostsManager.editPost(postIdentifier, { tags: [tag] });
             res.status(response.status === "success" ? 200 : 400).json(response);
         } catch (e) {
             logger.error((e as Error).message);
