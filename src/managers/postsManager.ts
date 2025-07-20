@@ -1,6 +1,5 @@
 import { TagsManager } from "./tagsManager";
 import { Response } from "../common/interfaces/response/Response";
-import { EntityNotFoundError, Repository } from "typeorm";
 import { Posts } from "../database/entity/Posts";
 import { dataSource } from "../database/dataSource";
 import { escapeHtml } from "../utils/functions";
