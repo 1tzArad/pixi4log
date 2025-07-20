@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/1tzArad/pixi4log/compare/v1.0.0...v1.1.0) (2025-07-20)
+
+
+### Features
+
+* add README.md with project overview, features, installation, and API documentation ([0a4431f](https://github.com/1tzArad/pixi4log/commit/0a4431f1ed71e0bba8a45a290bcb8632c9ac6ab5))
+
 # 1.0.0 (2025-07-20)
 
 
