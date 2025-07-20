@@ -3,9 +3,11 @@ import {
     Entity,
     ManyToOne,
     PrimaryGeneratedColumn,
-    BeforeInsert
+    BeforeInsert,
+    ManyToMany,
+    JoinTable
 } from "typeorm";
-import { Categories } from "./Categories";
+import { Tags } from "./Tags";
 
 @Entity()
 export class Posts {
@@ -15,8 +17,9 @@ export class Posts {
     @Column()
     content!: string;
 
-    @ManyToOne(() => Categories, (category) => category.posts)
-    category!: Categories;
+    @ManyToMany(() => Tags, (tags) => tags.posts)
+    @JoinTable()
+    tags!: Tags[];
 
     @Column({ type: 'bigint' })
     timestamp!: number;
