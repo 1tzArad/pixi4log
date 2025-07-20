@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/1tzArad/pixi4log/compare/v1.1.0...v1.1.1) (2025-07-20)
+
+
+### Bug Fixes
+
+* remove unused imports from postsManager.ts ([eea2db1](https://github.com/1tzArad/pixi4log/commit/eea2db15c29cc9d12fbf6cc4e23afb37265dcf7d))
+
 # [1.1.0](https://github.com/1tzArad/pixi4log/compare/v1.0.0...v1.1.0) (2025-07-20)
 
 
