@@ -4,8 +4,8 @@ A simple blog backend built with Node.js, Express, TypeORM, and PostgreSQL.
 
 ## Features
 
-- Category management (CRUD)
-- Post management (CRUD, change category)
+- Tag management (CRUD)
+- Post management (CRUD, change Tag)
 - Logging and error handling
 - Environment-based configuration
 
@@ -59,7 +59,7 @@ npm start
 
 #### Get All Categories
 
-- **GET** `/category/`
+- **GET** `/tag/`
 
 **Response:**
 ```json
@@ -77,9 +77,9 @@ npm start
 }
 ```
 
-#### Get Category by Identifier
+#### Get tag by Identifier
 
-- **GET** `/category/:identifier`
+- **GET** `/tag/:identifier`
 
 **Response:**
 ```json
@@ -95,9 +95,9 @@ npm start
 }
 ```
 
-#### Create Category
+#### Create tag
 
-- **POST** `/category/new`
+- **POST** `/tag/new`
 
 **Request Body:**
 ```json
@@ -112,13 +112,13 @@ npm start
 ```json
 {
   "status": "success",
-  "message": "Category Created Successfully!"
+  "message": "tag Created Successfully!"
 }
 ```
 
-#### Edit Category
+#### Edit tag
 
-- **POST** `/category/edit`
+- **POST** `/tag/edit`
 
 **Request Body:**
 ```json
@@ -132,13 +132,13 @@ npm start
 ```json
 {
   "status": "success",
-  "message": "Category has been updated successfully"
+  "message": "tag has been updated successfully"
 }
 ```
 
-#### Delete Category
+#### Delete tag
 
-- **POST** `/category/delete`
+- **POST** `/tag/delete`
 
 **Request Body:**
 ```json
@@ -151,7 +151,7 @@ npm start
 ```json
 {
   "status": "success",
-  "message": "Category deleted successfully"
+  "message": "tag deleted successfully"
 }
 ```
 
@@ -172,7 +172,7 @@ npm start
     {
       "id": "string",
       "content": "string",
-      "category": { ... },
+      "tag": { ... },
       "timestamp": 1234567890
     }
   ]
@@ -191,7 +191,7 @@ npm start
   "data": {
     "id": "string",
     "content": "string",
-    "category": { ... },
+    "tag": { ... },
     "timestamp": 1234567890
   }
 }
@@ -205,7 +205,7 @@ npm start
 ```json
 {
   "content": "string",
-  "categoryName": "string"
+  "tagName": "string"
 }
 ```
 
@@ -224,8 +224,8 @@ npm start
 **Request Body:**
 ```json
 {
-  "identifier": { "uuid": "string" | "timestamp": number | "category": { "uuid": "string" } },
-  "newData": { "content"?: "string", "category"?: { "uuid": "string" } }
+  "identifier": { "uuid": "string" | "timestamp": number | "tag": { "uuid": "string" } },
+  "newData": { "content"?: "string", "tag"?: { "uuid": "string" } }
 }
 ```
 
@@ -244,7 +244,7 @@ npm start
 **Request Body:**
 ```json
 {
-  "identifier": { "uuid": "string" | "timestamp": number | "category": { "uuid": "string" } }
+  "identifier": { "uuid": "string" | "timestamp": number | "tag": { "uuid": "string" } }
 }
 ```
 
@@ -256,15 +256,15 @@ npm start
 }
 ```
 
-#### Change Post Category
+#### Change Post tag
 
-- **POST** `/posts/category/change`
+- **POST** `/posts/tag/change`
 
 **Request Body:**
 ```json
 {
-  "postIdentifier": { "uuid": "string" | "timestamp": number | "category": { "uuid": "string" } },
-  "newCategoryIdentifier": { "uuid": "string" | "name": "string" }
+  "postIdentifier": { "uuid": "string" | "timestamp": number | "tag": { "uuid": "string" } },
+  "newtagIdentifier": { "uuid": "string" | "name": "string" }
 }
 ```
 
