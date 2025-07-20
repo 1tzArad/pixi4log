@@ -1,8 +1,8 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Posts} from "./Posts";
 
 @Entity()
-export class Categories {
+export class Tags {
     @PrimaryGeneratedColumn('uuid')
     uuid!: string;
 
@@ -15,6 +15,6 @@ export class Categories {
     @Column()
     icon!: string
 
-    @OneToMany(() => Posts, (post) => post.category)
+    @ManyToMany(() => Posts, (post) => post.tags)
     posts!: Posts[];
 }
