@@ -1,30 +1,30 @@
 import { Request, Response } from "express";
-import { CategoriesManager } from "../managers/categoriesManager";
+import { TagsManager } from "../managers/tagsManager";
 import Logger from "../utils/Logger";
 import {Errors} from "../common/enums/Errors";
 
-const logger = new Logger("Categories-Controller");
+const logger = new Logger("Tags-Controller");
 
-export class CategoriesController {
-    public static async getCategories(req: Request, res: Response) {
+export class TagsController {
+    public static async getTags(req: Request, res: Response) {
         try {
-            const response = await CategoriesManager.getCategories();
+            const response = await TagsManager.getTags();
             res.status(response.status === "success" ? 200 : 400).json(response);
         } catch {
             res.status(500).json({ status: "error", error: { message: "Internal server error" } });
         }
     }
 
-    public static async createCategory(req: Request, res: Response) {
+    public static async createTag(req: Request, res: Response) {
         const { name, fancyName, icon } = req.body;
         if (!name || !fancyName || !icon) {
             return res.status(400).json({ status: "error", error: { message: "name, fancyName and icon are required" } });
         }
-        const response = await CategoriesManager.createCategory(name, fancyName, icon);
+        const response = await TagsManager.createTag(name, fancyName, icon);
         res.status(response.status === "success" ? 201 : 400).json(response);
     }
 
-    public static async editCategory(req: Request, res: Response) {
+    public static async editTag(req: Request, res: Response) {
         const { identifier, newData } = req.body
 
         if (!identifier || typeof newData !== "object") {
@@ -35,15 +35,15 @@ export class CategoriesController {
 
         let response;
         if ("uuid" in identifier) {
-            response = await CategoriesManager.editCategoryByUUID(identifier.uuid, newData);
+            response = await TagsManager.editTagByUUID(identifier.uuid, newData);
         } else if ("name" in identifier) {
-            response = await CategoriesManager.editCategoryByName(identifier.name, newData);
+            response = await TagsManager.editTagByName(identifier.name, newData);
         } else if ("post" in identifier) {
             try {
-                const category = await CategoriesManager.findCategoryOrFail({ post: identifier.post });
-                response = await CategoriesManager.editCategory(category, newData);
+                const tag = await TagsManager.findTagOrFail({ post: identifier.post });
+                response = await TagsManager.editTag(tag, newData);
             } catch (e) {
-                response = { status: "error", error: { message: "Category not found for given post" } };
+                response = { status: "error", error: { message: "tag not found for given post" } };
             }
         } else {
             return res.status(400).json({ status: "error", error: { message: "Invalid identifier" } });
@@ -52,7 +52,7 @@ export class CategoriesController {
         res.status(response.status === "success" ? 200 : 400).json(response);
     }
 
-    public static async deleteCategory(req: Request, res: Response) {
+    public static async deleteTag(req: Request, res: Response) {
         const identifier = req.body.identifier;
 
         if (!identifier) {
@@ -63,15 +63,15 @@ export class CategoriesController {
 
         let response;
         if ("uuid" in identifier) {
-            response = await CategoriesManager.deleteCategoryByUUID(identifier.uuid);
+            response = await TagsManager.deleteTagByUUID(identifier.uuid);
         } else if ("name" in identifier) {
-            response = await CategoriesManager.deleteCategoryByName(identifier.name);
+            response = await TagsManager.deleteTagByName(identifier.name);
         } else if ("post" in identifier) {
             try {
-                const category = await CategoriesManager.findCategoryOrFail({ post: identifier.post });
-                response = await CategoriesManager.deleteCategory(category);
+                const tag = await TagsManager.findTagOrFail({ post: identifier.post });
+                response = await TagsManager.deleteTag(tag);
             } catch (e) {
-                response = { status: "error", error: { message: "Category not found for given post" } };
+                response = { status: "error", error: { message: "tag not found for given post" } };
             }
         } else {
             return res.status(400).json({ status: "error", error: { message: "Invalid identifier" } });
@@ -80,22 +80,22 @@ export class CategoriesController {
         res.status(response.status === "success" ? 200 : 400).json(response);
     }
 
-    public static async getCategoryByIdentifier(req: Request, res: Response) {
+    public static async getTagByIdentifier(req: Request, res: Response) {
         try {
             const { identifier } = req.params;
-            let category;
+            let tag;
             const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
             if (uuidRegex.test(identifier)) {
-                category = await CategoriesManager.findCategory({ uuid: identifier });
+                tag = await TagsManager.findTag({ uuid: identifier });
             } else {
-                category = await CategoriesManager.findCategory({ name: identifier });
+                tag = await TagsManager.findTag({ name: identifier });
             }
 
-            if (!category) {
-                return res.status(404).json({ status: "error", error: { type: Errors.NOTFOUND, message: "Category not found." } });
+            if (!tag) {
+                return res.status(404).json({ status: "error", error: { type: Errors.NOTFOUND, message: "tag not found." } });
             }
 
-            return res.json({ status: "success", data: category });
+            return res.json({ status: "success", data: tag });
         } catch (error) {
             return res.status(500).json({ status: "error", error: { type: Errors.SERVERERROR, message: "Internal server error." } });
         }
