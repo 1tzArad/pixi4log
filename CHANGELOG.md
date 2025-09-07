@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/1tzArad/pixi4log/compare/v1.1.2...v1.2.0) (2025-07-20)
+
+
+### Features
+
+* add GitHub Actions workflow for continuous deployment to Liara ([8451cf2](https://github.com/1tzArad/pixi4log/commit/8451cf25e99bbae56b6aefd82191283fadc5da38))
+
 ## [1.1.2](https://github.com/1tzArad/pixi4log/compare/v1.1.1...v1.1.2) (2025-07-20)
 
 
