@@ -13,7 +13,7 @@ export default (app: Application) => {
     }
     const middlewareFiles = fs.readdirSync(middlewaresDirectoryPath);
 
-    const excludeMiddlewares = ["authMiddleware", "authSocketMiddleware"];
+    const excludeMiddlewares = [""];
 
     let loadedAny = false;
 
