@@ -14,6 +14,7 @@ logger.debug("Environment variables loaded");
 
 const config = {
     port: Number(process.env.PORT) || 3000,
+    allowedOrigins: process.env.ALLOWED_ORIGINS?.split(",") ?? [],
     database: {
         host: process.env.DB_HOST || '',
         name: process.env.DB_NAME || '',

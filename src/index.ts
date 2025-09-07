@@ -9,6 +9,7 @@ import middlewareHandler from "./handlers/middlewareHandler";
 import compression from "compression";
 import helmet from "helmet";
 import { dataSource } from "./database/dataSource";
+import cors, { CorsOptions } from 'cors';
 
 const app = express();
 const server = http.createServer(app);
@@ -21,8 +22,22 @@ app.use(express.json());
 app.use(compression());
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }))
+console.log(configuration.allowedOrigins)
 
-logger.debug("Middlewares applied: json, compression, helmet, urlencoded");
+app.use(cors({
+    origin: function (origin, callback) {
+    if (origin && configuration.allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+
+logger.debug("Middlewares applied: json, compression, helmet, urlencoded, cors");
+
 
 // handlers
 middlewareHandler(app);
@@ -41,8 +56,8 @@ dataSource.initialize()
         new Logger('Database').error("Error during Data Source initialization:" + error);
     });
 
-server.listen(configuration.port, () => {
-    logger.info("Server listening on port " + configuration.port);
+app.listen(configuration.port, () => {
+    logger.info("App listening on port " + configuration.port);
 });
 
 // Anti-Crash handlers with logs
