@@ -1,5 +1,6 @@
 export enum Errors {
     NOTFOUND= 'NotFound',
     SERVERERROR= 'ServerError',
-    EXISTS= 'exists'
+    EXISTS= 'exists',
+    VALIDATION= 'ValidationError'
 }
