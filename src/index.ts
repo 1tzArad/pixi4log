@@ -10,6 +10,7 @@ import compression from "compression";
 import helmet from "helmet";
 import { dataSource } from "./database/dataSource";
 import cors, { CorsOptions } from 'cors';
+import { UserValidate } from "./utils/validate"
 
 const app = express();
 const server = http.createServer(app);
@@ -17,12 +18,10 @@ const logger = new Logger("APP");
 
 logger.debug("Starting application initialization");
 
-
 app.use(express.json());
 app.use(compression());
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }))
-console.log(configuration.allowedOrigins)
 
 app.use(cors({
     origin: function (origin, callback) {
