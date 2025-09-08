@@ -15,6 +15,7 @@ logger.debug("Environment variables loaded");
 const config = {
     port: Number(process.env.PORT) || 3000,
     allowedOrigins: process.env.ALLOWED_ORIGINS?.split(",") ?? [],
+    jwt_secret: process.env.JWT_SECRET as string,
     database: {
         host: process.env.DB_HOST || '',
         name: process.env.DB_NAME || '',
@@ -23,6 +24,6 @@ const config = {
     }
 };
 
-logger.debug(`Configuration object created: port=${config.port}, db host=${config.database.host}`);
+logger.debug(`🔩 Configuration object created: port=${config.port}, db host=${config.database.host}, allowedOrigins=${config.allowedOrigins}`);
 
 export default config;
