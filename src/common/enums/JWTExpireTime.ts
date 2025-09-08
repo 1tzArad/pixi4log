@@ -1,0 +1,16 @@
+export enum JWTExpireTime {
+  ONE_HOUR = 60 * 60,
+  FIVE_HOURS = 5 * 60 * 60,
+  TEN_HOURS = 10 * 60 * 60,
+  ONE_DAY = 24 * 60 * 60,
+  TWO_DAYS = 2 * 24 * 60 * 60,
+  FIVE_DAYS = 5 * 24 * 60 * 60,
+  ONE_WEEK = 7 * 24 * 60 * 60,
+  TWO_WEEKS = 14 * 24 * 60 * 60,
+  THREE_WEEKS = 21 * 24 * 60 * 60,
+  ONE_MONTH = 30 * 24 * 60 * 60,
+  TWO_MONTHS = 60 * 24 * 60 * 60,
+  THREE_MONTHS = 90 * 24 * 60 * 60,
+  SIX_MONTHS = 180 * 24 * 60 * 60,
+  ONE_YEAR = 365 * 24 * 60 * 60,
+}
