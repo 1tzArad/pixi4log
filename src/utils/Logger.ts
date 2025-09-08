@@ -6,7 +6,7 @@ class Logger {
 
     constructor(private serviceName: string = 'App') {
         this.logger = createLogger({
-            level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+            level: process.env.DEBUG === 'true' ? 'debug' : 'info',
             format: format.combine(
                 format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
                 format.printf(({ timestamp, level, message }) => {
