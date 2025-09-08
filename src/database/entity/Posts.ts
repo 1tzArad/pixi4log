@@ -8,7 +8,7 @@ import {
     JoinTable
 } from "typeorm";
 import { Tags } from "./Tags";
-import { Users } from "./Authors";
+import { Users } from "./Users";
 
 @Entity()
 export class Posts {

@@ -5,7 +5,6 @@ import { Response } from "../common/interfaces/response/Response";
 import { Errors } from "../common/enums/Errors";
 import { Posts } from "../database/entity/Posts";
 import Logger from "../utils/Logger";
-import logger from "../utils/Logger";
 
 type TagsIdentifier = { uuid: string } | { name: string } | { post: Posts };
 export class TagsManager {
