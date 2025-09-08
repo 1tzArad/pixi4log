@@ -8,6 +8,7 @@ import {
     JoinTable
 } from "typeorm";
 import { Tags } from "./Tags";
+import { Users } from "./Authors";
 
 @Entity()
 export class Posts {
@@ -16,6 +17,9 @@ export class Posts {
 
     @Column()
     content!: string;
+
+    @ManyToOne(() => Users, (user) => user.posts)
+    author!: Users;
 
     @ManyToMany(() => Tags, (tags) => tags.posts)
     @JoinTable()
