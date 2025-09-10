@@ -6,6 +6,7 @@ A simple blog backend built with Node.js, Express, TypeORM, and PostgreSQL.
 
 - Tag management (CRUD)
 - Post management (CRUD, change Tag)
+- User management (CRUD, JWT auth)
 - Logging and error handling
 - Environment-based configuration
 
@@ -26,7 +27,7 @@ npm install
 
 ### Configuration
 
-Copy `.env.example` to `.env` and fill in your database credentials:
+Copy `.env.example` to `.env` and fill in your configuration:
 
 ```
 DB_HOST=your_db_host
@@ -34,6 +35,8 @@ DB_NAME=your_db_name
 DB_USER=your_db_user
 DB_PASS=your_db_password
 PORT=3000
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+JWT_SECRET=your_long_random_secret
 ```
 
 ### Running the Project
@@ -55,11 +58,11 @@ npm start
 
 ## API Endpoints
 
-### Categories
+### Tags
 
-#### Get All Categories
+#### Get All Tags
 
-- **GET** `/tag/`
+- **GET** `/tags/`
 
 **Response:**
 ```json
@@ -77,9 +80,9 @@ npm start
 }
 ```
 
-#### Get tag by Identifier
+#### Get Tag by Identifier
 
-- **GET** `/tag/:identifier`
+- **GET** `/tags/:identifier`
 
 **Response:**
 ```json
@@ -95,9 +98,9 @@ npm start
 }
 ```
 
-#### Create tag
+#### Create Tag (protected)
 
-- **POST** `/tag/new`
+- **POST** `/tags/new`
 
 **Request Body:**
 ```json
@@ -116,9 +119,9 @@ npm start
 }
 ```
 
-#### Edit tag
+#### Edit Tag (protected)
 
-- **POST** `/tag/edit`
+- **POST** `/tags/edit`
 
 **Request Body:**
 ```json
@@ -136,9 +139,9 @@ npm start
 }
 ```
 
-#### Delete tag
+#### Delete Tag (protected)
 
-- **POST** `/tag/delete`
+- **POST** `/tags/delete`
 
 **Request Body:**
 ```json
@@ -197,15 +200,17 @@ npm start
 }
 ```
 
-#### Create Post
+#### Create Post (protected)
 
 - **POST** `/posts/new`
+
+Protected. Send Authorization header.
 
 **Request Body:**
 ```json
 {
   "content": "string",
-  "tagName": "string"
+  "tagNames": ["string"]
 }
 ```
 
@@ -217,7 +222,7 @@ npm start
 }
 ```
 
-#### Edit Post
+#### Edit Post (protected)
 
 - **POST** `/posts/edit`
 
@@ -237,7 +242,7 @@ npm start
 }
 ```
 
-#### Delete Post
+#### Delete Post (protected)
 
 - **POST** `/posts/delete`
 
@@ -256,15 +261,15 @@ npm start
 }
 ```
 
-#### Change Post tag
+#### Change Post Tag (protected)
 
-- **POST** `/posts/tag/change`
+- **POST** `/posts/category/change`
 
 **Request Body:**
 ```json
 {
   "postIdentifier": { "uuid": "string" | "timestamp": number | "tag": { "uuid": "string" } },
-  "newtagIdentifier": { "uuid": "string" | "name": "string" }
+  "newCategoryIdentifier": { "uuid": "string" | "name": "string" }
 }
 ```
 
@@ -275,6 +280,68 @@ npm start
   "message": "Post updated successfully!"
 }
 ```
+
+---
+
+### Users
+
+#### Get All Users
+
+- **GET** `/users/`
+- Optional query: `fields` (comma-separated list of fields)
+
+#### Get User by Identifier
+
+- **GET** `/users/:identifier`
+- `identifier` can be a UUID, an email address, or a username
+
+#### Create User (sign up)
+
+- **POST** `/users/new`
+
+**Request Body:**
+```json
+{
+  "username": "string",
+  "email": "string",
+  "password": "string"
+}
+```
+
+Returns a JWT token on success.
+
+#### Edit User (protected)
+
+- **POST** `/users/edit`
+
+**Request Body:**
+```json
+{
+  "identifier": { "uuid"?: "string", "email"?: "string", "username"?: "string" },
+  "newData": { "username"?: "string", "email"?: "string", "password"?: "string" }
+}
+```
+
+#### Delete User (protected)
+
+- **POST** `/users/delete`
+
+**Request Body:**
+```json
+{
+  "identifier": { "uuid"?: "string", "email"?: "string", "username"?: "string" }
+}
+```
+
+---
+
+## Authentication
+
+Protected endpoints require a valid JWT in the Authorization header.
+
+- Header: `Authorization: Bearer <token>`
+- Tokens are issued by `POST /users/new` upon successful user creation.
+- Token verification uses the `JWT_SECRET` from your environment configuration.
 
 ---
 
