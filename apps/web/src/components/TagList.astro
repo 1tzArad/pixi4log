@@ -1,0 +1,132 @@
+---
+import Tag from "./Tag.astro";
+import MoreButton from "./MoreButton.astro";
+
+export interface Props {
+  tags: {
+    name: string;
+    icon: string;
+  }[];
+}
+const { tags } = Astro.props;
+
+---
+
+<div id="tags-wrapper" class="flex flex-wrap gap-2 justify-end relative">
+  {tags.map((tag) => (
+    <Tag
+      name={tag.name}
+      icon={tag.icon}
+      href={`/tags/${tag.name.toLowerCase()}`}
+    />
+  ))}
+
+  <MoreButton extraTags={[]} />
+</div>
+
+<script>
+  (() => {
+    const tagsWrapper = document.getElementById('tags-wrapper');
+    if (!tagsWrapper) return;
+
+    const allTagElements = Array.from(tagsWrapper.querySelectorAll('.tag-item'));
+    const moreButtonWrapper = document.getElementById('more-button-wrapper');
+    const moreCountSpan = document.getElementById('more-count');
+    const dropdownTags = document.getElementById('dropdown-tags');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const moreButton = document.getElementById('more-button');
+
+    function updateVisibleTags() {
+      const width = window.innerWidth;
+      let visibleCount = 6;
+      if (width < 640) visibleCount = 3;
+      else if (width < 1024) visibleCount = 4;
+
+      allTagElements.forEach(el => {
+        el.style.display = 'none';
+      });
+
+      allTagElements.slice(0, visibleCount).forEach(el => {
+        el.style.display = 'flex';
+      });
+
+      const extraTags = allTagElements.slice(visibleCount);
+
+      if (extraTags.length > 0) {
+        if (moreButtonWrapper) moreButtonWrapper.classList.remove('hidden');
+        if (moreCountSpan) moreCountSpan.textContent = extraTags.length.toString();
+        if (dropdownTags) {
+          dropdownTags.innerHTML = '';
+          extraTags.forEach(el => {
+            const clone = el.cloneNode(true);
+            clone.style.display = 'flex';
+            dropdownTags.appendChild(clone);
+          });
+        }
+      } else {
+        if (moreButtonWrapper) moreButtonWrapper.classList.add('hidden');
+        if (dropdownMenu) {
+          dropdownMenu.style.opacity = '0';
+          dropdownMenu.style.visibility = 'hidden';
+        }
+      }
+    }
+
+    if (!moreButtonWrapper || !moreButton || !dropdownMenu) return;
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (!isTouchDevice) {
+      moreButtonWrapper.addEventListener('mouseenter', () => {
+        dropdownMenu.style.opacity = '1';
+        dropdownMenu.style.visibility = 'visible';
+        dropdownMenu.style.cursor = 'pointer';
+      });
+
+      moreButtonWrapper.addEventListener('mouseleave', () => {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      });
+
+      dropdownMenu.addEventListener('mouseenter', () => {
+        dropdownMenu.style.opacity = '1';
+        dropdownMenu.style.visibility = 'visible';
+      });
+
+      dropdownMenu.addEventListener('mouseleave', () => {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      });
+    }
+
+    moreButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isVisible = dropdownMenu.style.visibility === 'visible';
+
+      if (isVisible) {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      } else {
+        dropdownMenu.style.opacity = '1';
+        dropdownMenu.style.visibility = 'visible';
+        dropdownMenu.style.cursor = 'pointer';
+
+        const menuRect = dropdownMenu.getBoundingClientRect();
+        if (menuRect.bottom > window.innerHeight) {
+          dropdownMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!moreButtonWrapper.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      }
+    });
+
+    window.addEventListener('resize', updateVisibleTags);
+    window.addEventListener('load', updateVisibleTags);
+    updateVisibleTags();
+  })();
+</script>

@@ -1,0 +1,30 @@
+---
+import '../styles/global.css'
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Pixi4Log</title>
+		 <meta property="og:type" content="article">
+    	<meta property="og:title" content="test">
+    	<meta property="og:description" content="سلام دختری">
+    	<meta property="og:image" content="">
+    	<meta property="og:site_name" content="Pixi4Log">
+	</head>
+	<body class="bg-gray-900 text-gray-100 min-h-screen">
+		<slot />
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

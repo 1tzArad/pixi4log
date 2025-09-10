@@ -1,0 +1,177 @@
+---
+import type { Tags } from "../common/interfaces";
+import Tag from "./Tag.astro";
+import {API} from '../scripts/api'
+const api = new API()
+
+const allTags: Tags[] = await api.getTags()
+---
+
+<header class="bg-gray-900 shadow-sm sticky top-0 z-50">
+<div class="container mx-auto px-4 py-6 flex justify-between items-center flex-wrap gap-4">
+  <span>
+    <a href="/" class="flex items-center gap-2 text-xl font-bold text-white">
+      Pixi4log
+    </a>
+  </span>
+  
+    <div id="tags-wrapper" class="flex flex-wrap gap-2 justify-end relative">
+      {allTags.map((tag) => (
+        <Tag
+          key={tag.name}
+          name={tag.name}
+          fancyName={tag.fancyName}
+          icon={tag.icon}
+          href={`/tags/${tag.name}`}
+          class="tag-item"
+        />
+      ))}
+
+      <div id="more-button-wrapper" class="relative group hidden">
+        <a
+          href="#"
+          id="more-button"
+          class="flex items-center bg-gray-800 hover:bg-gray-700 transition-all duration-200 px-3 py-1.5 rounded-xl shadow-sm border border-gray-700 text-sm text-gray-100 cursor-pointer select-none"
+        >
+          <span class="inline-flex items-center gap-0.5">
+            +<span id="more-count">0</span>
+          </span>
+          <span class="ml-1">more</span>
+        </a>
+
+        <div
+          id="dropdown-menu"
+          class="dropdown-menu absolute right-0 mt-1 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-700 opacity-0 invisible transition-opacity duration-200 z-50"
+        >
+          <div
+            id="dropdown-tags"
+            class="flex flex-col p-2 gap-2 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  (() => {
+    const tagsWrapper = document.getElementById('tags-wrapper');
+    const moreButtonWrapper = document.getElementById('more-button-wrapper');
+    const moreButton = document.getElementById('more-button');
+    const moreCountSpan = document.getElementById('more-count');
+    const dropdownTags = document.getElementById('dropdown-tags');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    if (!tagsWrapper || !moreButtonWrapper || !moreButton || !moreCountSpan || !dropdownTags || !dropdownMenu) return;
+
+    const allTagElements = Array.from(tagsWrapper.querySelectorAll('.tag-item'));
+
+    function updateVisibleTags() {
+      const width = window.innerWidth;
+      let visibleCount = 6;
+      if (width < 640) visibleCount = 3;
+      else if (width < 1024) visibleCount = 4;
+
+      allTagElements.forEach(el => {
+        el.style.display = 'none';
+      });
+
+      allTagElements.slice(0, visibleCount).forEach(el => {
+        el.style.display = 'flex';
+      });
+
+      const extraTags = allTagElements.slice(visibleCount);
+
+      if (extraTags.length > 0) {
+        moreButtonWrapper.classList.remove('hidden');
+        moreCountSpan.textContent = extraTags.length.toString();
+        dropdownTags.innerHTML = '';
+
+        extraTags.forEach(el => {
+          const clone = el.cloneNode(true);
+          clone.style.display = 'flex';
+          dropdownTags.appendChild(clone);
+        });
+      } else {
+        moreButtonWrapper.classList.add('hidden');
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      }
+    }
+
+    updateVisibleTags();
+
+    window.addEventListener('resize', updateVisibleTags);
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (!isTouchDevice) {
+      moreButtonWrapper.addEventListener('mouseenter', () => {
+        dropdownMenu.style.opacity = '1';
+        dropdownMenu.style.visibility = 'visible';
+        dropdownMenu.style.cursor = 'pointer';
+      });
+
+      moreButtonWrapper.addEventListener('mouseleave', () => {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      });
+
+      dropdownMenu.addEventListener('mouseenter', () => {
+        dropdownMenu.style.opacity = '1';
+        dropdownMenu.style.visibility = 'visible';
+      });
+
+      dropdownMenu.addEventListener('mouseleave', () => {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      });
+    }
+
+    moreButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isVisible = dropdownMenu.style.visibility === 'visible';
+
+      if (isVisible) {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      } else {
+        dropdownMenu.style.opacity = '1';
+        dropdownMenu.style.visibility = 'visible';
+        dropdownMenu.style.cursor = 'pointer';
+
+        const menuRect = dropdownMenu.getBoundingClientRect();
+        if (menuRect.bottom > window.innerHeight) {
+          dropdownMenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!moreButtonWrapper.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.style.opacity = '0';
+        dropdownMenu.style.visibility = 'hidden';
+      }
+    });
+  })();
+</script>
+
+<style>
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 3px;
+  }
+
+  .group:hover .dropdown-menu,
+  .dropdown-menu:hover {
+    opacity: 1 !important;
+    visibility: visible !important;
+    cursor: pointer;
+  }
+</style>

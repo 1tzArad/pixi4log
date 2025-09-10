@@ -1,0 +1,77 @@
+---
+import Tag from "../../components/Tag.astro";
+import Header from "../../components/Header.astro";
+import Layout from "../../layouts/Layout.astro";
+import PostCard from "../../components/PostCard.astro";
+import { API } from "../../scripts/api";
+import type { Post } from "../../common/interfaces";
+
+const api = new API();
+
+export async function getStaticPaths() {
+  const api = new API();
+  const tags = await api.getTags();
+  return tags.map((tag) => ({
+    params: { tag: tag.name },
+  }));
+}
+
+const { tag } = Astro.params;
+
+const p = await api.getPostsByTag(tag);
+let categoryData = await api.getTagByName(tag);
+
+const posts = await Promise.all(
+  p.map((post) => api.getPostByTimestamp(post.timestamp))
+);
+
+categoryData = {
+  name: categoryData.name,
+  fancyName: categoryData.fancyName,
+  icon: categoryData.icon,
+  posts: posts,
+};
+console.log(categoryData);
+---
+
+<Layout>
+  <Header />
+  <main class="container mx-auto px-4 py-8 max-w-3xl">
+    {
+      categoryData ? (
+        <>
+          <h1 class="text-3xl font-bold mb-6 flex items-center gap-2 text-slate-400">
+            <img
+              src={`https://em-content.zobj.net/source/apple/419/${categoryData.icon}.png`}
+              alt={categoryData.name}
+              class="w-10 h-10"
+              loading="lazy"
+              decoding="async"
+            />
+            Posts tagged with{" "}
+            <span class="text-slate-200">{categoryData.fancyName}</span>
+          </h1>
+
+          {posts.length > 0 &&
+            posts[0].map((post) => (
+              <PostCard
+                content={post.content}
+                timestamp={post.timestamp}
+                tags={post.tags}
+              />
+            ))}
+
+          {posts.length === 0 && (
+              <p class="text-center text-gray-700 antialiased mt-40">
+                404 | There is no posts submitted for this tag!
+              </p>
+          )}
+        </>
+      ) : (
+        <h2 class="text-red-400 text-xl">
+          <code>{tag}</code> Not Found!
+        </h2>
+      )
+    }
+  </main>
+</Layout>

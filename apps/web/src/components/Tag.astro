@@ -1,0 +1,20 @@
+---
+const { name, icon, href = '#', fancyName } = Astro.props;
+---
+
+<a
+  href={href}
+  class="tag-item flex items-center gap-2 bg-gray-800 hover:bg-gray-700 transition-all duration-200 px-3 py-1.5 rounded-xl shadow-sm border border-gray-700 text-sm text-gray-100"
+  aria-label={`tag ${name}`}
+>
+  <div class="w-5 h-5 bg-gray-700 flex items-center justify-center rounded-full">
+    <img
+      src={`https://em-content.zobj.net/source/apple/419/${icon}.png`}
+      alt={name}
+      class="w-4.5 h-4.5"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  {fancyName}
+</a>

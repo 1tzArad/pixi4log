@@ -1,0 +1,35 @@
+---
+import Header from '../components/Header.astro';
+import PostCard from '../components/PostCard.astro';
+import Footer from '../components/Footer.astro';
+import Layout from '../layouts/Layout.astro';
+import type { Post } from '../common/interfaces';
+import { API } from '../scripts/api';
+const api = new API()
+const posts: Post[] = await api.getPosts();
+---
+
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+
+  <Layout>
+    <Header />
+
+    <main class="container mx-auto px-4 py-8 max-w-3xl">
+      <h1 class="text-4xl font-bold mb-8">Posts</h1>
+
+      {posts.map(post => (
+        <PostCard
+          content={post.content}
+          timestamp={post.timestamp}
+          tags={post.tags} />
+      ))}
+    </main>
+
+    <Footer />
+  </Layout>
+</html>
