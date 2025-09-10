@@ -16,7 +16,7 @@ type UserIdentifier =
   | { email: string }
   | { username: string }
   | { post: Posts };
-export class AuthorManager {
+export class UserManager {
   public static UserRepository: Repository<Users> =
     dataSource.getRepository(Users);
   private static logger: Logger = new Logger("User-Manager");
