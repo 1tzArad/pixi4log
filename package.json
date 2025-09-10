@@ -3,6 +3,9 @@
   "version": "1.2.0",
   "description": "",
   "main": "dist/index.js",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development DEBUG=false ts-node src/index.ts",
     "dev:debug": "cross-env NODE_ENV=development DEBUG=true ts-node src/index.ts",
